@@ -1,0 +1,41 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="public/index.css">
+    <title>NFTPaint</title>
+
+</head>
+<body>
+    <section class="container">
+        <div id="toolbar">
+            <h1>NFTPaint</h1>
+			<div id="buttons">
+	            <button id="export">Export NFT</button>
+			</div>
+			<div>
+	            <button id="undo">Undo</button>
+	            <button id="redo">Redo</button>
+	            <button id="clear">Clear</button>
+			</div>
+			<div>
+	            <label for="stroke">Color</label>
+	            <input id="stroke" name='stroke' type="color">
+			</div>
+			<div>
+	            <label for="lineWidth">Line Width</label>
+	            <input id="lineWidth" name='lineWidth' type="number" value="5">
+			</div>
+        </div>
+		<div id="modal" style="display:none;">
+			<button id="close">X</button>
+			<div id="modal-message"></div>
+		</div>
+        <div class="drawing-board">
+            <canvas id="drawing-board"></canvas>
+        </div>
+    </section>
+    <script src="./public/index.js"></script>
+</body>
+</html>

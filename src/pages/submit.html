@@ -1,0 +1,39 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="public/submit.css">
+    <title>NFTPaint</title>
+
+</head>
+<body>
+    <section class="container">
+        <div id="toolbar">
+            <h1>NFTPaint</h1>
+			<div id="buttons">
+			</div>
+        </div>
+		<div id="modal" style="display:none;">
+			<button id="close">X</button>
+			<div id="modal-message"></div>
+		</div>
+
+		<form id="login-form" style="display:none;">
+			Log in to upload an image.
+            <button id="log-in">Log in</button>
+		</form>
+        <form id="upload-form">
+			<label for="metadataName">Image Name</label>
+			<input type="text" name="metadataName" id="metadataName" placeholder="Image name" />
+			<label for="metadataDescription">Description</label>
+			<textarea name="metadataDescription" id="metadataDescription"></textarea>
+			<input type="file" name="fileInput" id="fileInput" />
+			<div id="preview"></div>
+			<button id="uploadButton">Upload</button>
+		</form>
+
+    </section>
+    <script src="./public/submit.js"></script>
+</body>
+</html>

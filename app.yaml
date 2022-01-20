@@ -1,0 +1,14 @@
+runtime: nodejs16
+
+entrypoint: node app.js
+
+handlers:
+  - url: /public
+    static_dir: dist
+
+  - url: /.*
+    script: auto
+
+  - url: /favicon.ico
+    static_files: favicon.ico
+    upload: favicon.ico

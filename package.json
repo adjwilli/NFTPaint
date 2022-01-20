@@ -1,0 +1,39 @@
+{
+	"name": "nftpaint",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"prod": "npm run lint && webpack --mode production",
+		"dev": "npm run lint && webpack watch --mode development",
+		"start": "node app.js",
+		"lint": "jshint src/*/*.js webpack.config.js",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"deploy": "npm run prod && gcloud app deploy --project=nftpaint-338616"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.16.5",
+		"@babel/preset-env": "^7.16.5",
+		"autoprefixer": "^10.4.0",
+		"babel-loader": "^8.2.3",
+		"css-loader": "^6.5.1",
+		"extract-loader": "^5.1.0",
+		"file-loader": "^6.2.0",
+		"jshint": "^2.13.3",
+		"node-sass": "^7.0.0",
+		"postcss-loader": "^6.2.1",
+		"sass": "^1.45.0",
+		"sass-loader": "^12.4.0",
+		"style-loader": "^3.3.1",
+		"webpack": "^5.65.0",
+		"webpack-cli": "^4.9.1",
+		"webpack-dev-server": "^4.6.0"
+	},
+	"author": "Adam Williams",
+	"license": "ISC",
+	"dependencies": {
+		"@walletconnect/web3-provider": "^1.0.8",
+		"express": "^4.17.2",
+		"moralis": "^1.0.1"
+	}
+}
