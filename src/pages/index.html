@@ -9,23 +9,15 @@
 </head>
 <body>
     <section class="container">
-        <div id="toolbar">
+        <div id="titlebar" class="toolbar">
             <h1>NFTPaint</h1>
 			<div id="buttons">
 	            <button id="export">Export NFT</button>
 			</div>
-			<div>
-	            <button id="undo">Undo</button>
-	            <button id="redo">Redo</button>
-	            <button id="clear">Clear</button>
-			</div>
-			<div>
-	            <label for="stroke">Color</label>
-	            <input id="stroke" name='stroke' type="color">
-			</div>
-			<div>
-	            <label for="lineWidth">Line Width</label>
-	            <input id="lineWidth" name='lineWidth' type="number" value="5">
+			<div id="canvas-options">
+	            <button id="undo" disabled="disabled">Undo</button>
+	            <button id="redo" disabled="disabled">Redo</button>
+	            <button id="clear" disabled="disabled">Clear</button>
 			</div>
         </div>
 		<div id="modal" style="display:none;">
@@ -35,6 +27,16 @@
         <div class="drawing-board">
             <canvas id="drawing-board"></canvas>
         </div>
+		<div id="paint-options" class="toolbar">
+			<div>
+				<label for="stroke">Color</label>
+				<input id="stroke" name='stroke' type="color">
+			</div>
+			<div>
+				<label for="lineWidth">Line Width</label>
+				<input id="lineWidth" name='lineWidth' type="number" value="5">
+			</div>
+		</div>
     </section>
     <script src="./public/index.js"></script>
 </body>

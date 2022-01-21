@@ -9,7 +9,7 @@
 		"start": "node app.js",
 		"lint": "jshint src/*/*.js webpack.config.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"deploy": "npm run prod && gcloud app deploy --project=nftpaint-338616"
+		"deploy": "gcloud app deploy --project=nftpaint-338616"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.16.5",
@@ -34,6 +34,6 @@
 	"dependencies": {
 		"@walletconnect/web3-provider": "^1.0.8",
 		"express": "^4.17.2",
-		"moralis": "^1.0.1"
+		"moralis": "^1.0.7"
 	}
 }

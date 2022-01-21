@@ -4,14 +4,14 @@ import * as DrawingBoard from '../components/drawing-board.js';
 
 const Moralis = require('moralis');
 
-const toolbar = document.getElementById('toolbar');
+const titlebar = document.getElementById('titlebar');
 
 const buttons = document.getElementById('buttons');
 const modal = document.getElementById('modal');
 const closeButton = document.getElementById('close');
 const modalMessage = document.getElementById('modal-message');
 
-toolbar.addEventListener('click', e => {
+titlebar.addEventListener('click', e => {
 	if (e.target.id === 'logout') {
 		Moralis.User.logOut();
 		user = false;

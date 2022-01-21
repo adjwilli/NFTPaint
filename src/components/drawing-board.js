@@ -1,15 +1,19 @@
 
-const toolbar = document.getElementById('toolbar');
+const titlebar = document.getElementById('titlebar');
+const paintOptions = document.getElementById('paint-options');
 const canvas = document.getElementById('drawing-board');
+const clearButton = document.getElementById('clear');
+const undoButton = document.getElementById('undo');
+const redoButton = document.getElementById('redo');
 const context = canvas.getContext('2d');
 let imageHistory = [];
-let imageHistoryIndex;
+let imageHistoryIndex = -1;
 
 const canvasOffsetX = canvas.offsetLeft;
 const canvasOffsetY = canvas.offsetTop;
 
 canvas.width = window.innerWidth - canvasOffsetX;
-canvas.height = window.innerHeight - canvasOffsetY;
+canvas.height = window.innerHeight - (canvasOffsetY + paintOptions.offsetHeight);
 
 let isPainting = false;
 let lineWidth = 5;
@@ -46,15 +50,17 @@ const drawStart = (e) => {
 	    context.stroke();
 	},
 	loadSavedImage = () => {
+		const img = document.createElement("img");
+		img.onload = () => {
+			context.drawImage(img, 0, 0, img.width, img.height);
+		};
 		if (localStorage.nftPaint) {
-			const img = document.createElement("img");
-			img.onload = () => {
-				context.drawImage(img, 0, 0, img.width, img.height);
-			};
 			img.src = localStorage.nftPaint;
 		}
 		imageHistory.push(localStorage.nftPaint);
 		imageHistoryIndex = 0;
+
+		undoRedoState();
 	},
 	saveToStorage = () => {
 		const dataUrl = canvas.toDataURL("image/png");
@@ -66,17 +72,19 @@ const drawStart = (e) => {
 	},
 	saveToHistory = () => {
 		const dataUrl = canvas.toDataURL("image/png");
-		imageHistory = imageHistory.slice(0,imageHistoryIndex + 1);
+		imageHistory = imageHistory.slice(0, imageHistoryIndex + 1);
 		imageHistory.push(dataUrl);
 		imageHistoryIndex = imageHistory.length - 1;
+		undoRedoState();
 	},
 	clear = () => {
 		saveToStorage();
 		context.clearRect(0, 0, canvas.width, canvas.height);
+		localStorage.removeItem('nftPaint');
 		saveToHistory();
+		undoRedoState();
 	},
 	undo = () => {
-		console.log('imageHistory', imageHistory);
 		if (imageHistoryIndex > 0) {
 			imageHistoryIndex = imageHistoryIndex - 1;
 
@@ -90,9 +98,12 @@ const drawStart = (e) => {
 					saveToStorage();
 				};
 				img.src = dataUrl;
+			} else {
+				clear();
 			}
 		}
 
+		undoRedoState();
 	},
 	redo = () => {
 
@@ -109,20 +120,36 @@ const drawStart = (e) => {
 			};
 			img.src = dataUrl;
 		}
+
+		undoRedoState();
+
+	},
+	undoRedoState = () => {
+
+		if (imageHistoryIndex > 0) {
+			undoButton.removeAttribute('disabled');
+		} else {
+			undoButton.disabled = 'disabled';
+		}
+
+		if (imageHistoryIndex < imageHistory.length - 1) {
+			redoButton.removeAttribute('disabled');
+		} else {
+			redoButton.disabled = 'disabled';
+		}
+
+		if (localStorage.nftPaint) {
+			clearButton.removeAttribute('disabled');
+		} else {
+			clearButton.disabled = 'disabled';
+		}
 	};
 
-toolbar.addEventListener('click', e => {
-    if (e.target.id === 'clear') {
-		clear(e);
-	} else if (e.target.id === 'undo') {
-        undo(e);
-	} else if (e.target.id === 'redo') {
-        redo(e);
-	}
-});
+undoButton.addEventListener('click', undo);
+redoButton.addEventListener('click', redo);
+clearButton.addEventListener('click', clear);
 
-
-toolbar.addEventListener('change', e => {
+paintOptions.addEventListener('change', e => {
     if (e.target.id === 'stroke') {
         context.strokeStyle = e.target.value;
     }
