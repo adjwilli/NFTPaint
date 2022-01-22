@@ -12,7 +12,8 @@ const login = () => {
 			console.log("logged in user:", _user);
 			initUser();
 			Modal.close();
-			exportNFT();
+			chooseFilename();
+			gtag('event', 'login-success');
 		}).catch(function (error) {
 			if (error.toString().indexOf('Non ethereum enabled browser') > -1) {
 				Modal.display(`You need to install <a href="https://metamask.io/download/" target="_metaMask">MetaMask</a> or another Web3 wallet to export as an NFT.`);
@@ -20,6 +21,7 @@ const login = () => {
 				Modal.display(error);
 			}
 			user = false;
+			gtag('event', 'non-ethereum-browser');
 		});
 	},
 	initUser = () => {
@@ -35,6 +37,23 @@ const login = () => {
 				logoutButton.remove();
 			}
 		}
+	},
+	chooseFilename = () => {
+		const nextButton = document.createElement('button');
+		nextButton.innerText = 'Next';
+		nextButton.addEventListener('click', e => {
+			const filenameInput = document.getElementById('filename');
+			if (filenameInput.value.length > 0) {
+				DrawingBoard.setFilename(filenameInput.value);
+			} else {
+				DrawingBoard.clearFilename();
+			}
+			exportNFT();
+		});
+
+		Moralis.enableWeb3();
+		Modal.display(`NFT Name: <input type="text" name="filename" id="filename" value="${DrawingBoard.getFilename()}" />`, nextButton);
+		gtag('event', 'nft-filename');
 	};
 
 const exportNFT = async () => {
@@ -48,6 +67,7 @@ const exportNFT = async () => {
 
 	const ipfsUrl = imageFile.ipfs();
 	Modal.display(`Successfully uploaded image to <a href="${ipfsUrl}">${ipfsUrl}</a>`);
+	gtag('event', 'nft-ipfs');
 
     let metadata = {
         name: data.name,
@@ -59,7 +79,6 @@ const exportNFT = async () => {
 		base64 : btoa(JSON.stringify(metadata))
 	});
     await jsonFile.saveIPFS();
-
 	console.log(jsonFile);
 
     let metadataHash = jsonFile.hash();
@@ -101,10 +120,12 @@ const exportNFT = async () => {
 			}
 
 			Modal.display(`NFT minted. <a href="${nftUrl}" target="_rarible">View on Rarible</a>`);
+			gtag('event', 'nft-minted');
 		}
 
 	} catch (err) {
 		Modal.display(err);
+		gtag('event', 'nft-error');
 	}
 };
 
@@ -122,27 +143,16 @@ buttons.addEventListener('click', e => {
 		Moralis.User.logOut();
 		user = false;
 		initUser();
+		gtag('event', 'logout');
 	} else if (e.target.id === 'export') {
 		if (!user) {
 			const loginButton = document.createElement('button');
 			loginButton.innerText = 'Log-in';
 			loginButton.addEventListener('click', login);
 			Modal.display(`To export as an NFT, you must first log in.`, loginButton);
+			gtag('event', 'login-display');
 		} else {
-			const nextButton = document.createElement('button');
-			nextButton.innerText = 'Next';
-			nextButton.addEventListener('click', e => {
-				const filenameInput = document.getElementById('filename');
-				if (filenameInput.value.length > 0) {
-					DrawingBoard.setFilename(filenameInput.value);
-				} else {
-					DrawingBoard.clearFilename();
-				}
-				exportNFT();
-			});
-
-			Moralis.enableWeb3();
-			Modal.display(`NFT Name: <input type="text" name="filename" id="filename" value="${DrawingBoard.getFilename()}" />`, nextButton);
+			chooseFilename();
 		}
 	}
 });
