@@ -1,58 +1,25 @@
 import "./index.scss";
 
 import * as DrawingBoard from '../components/drawing-board.js';
+import * as Modal from '../components/modal.js';
 
 const Moralis = require('moralis');
 
-const titlebar = document.getElementById('titlebar');
-
 const buttons = document.getElementById('buttons');
-const modal = document.getElementById('modal');
-const closeButton = document.getElementById('close');
-const modalMessage = document.getElementById('modal-message');
 
-titlebar.addEventListener('click', e => {
-	if (e.target.id === 'logout') {
-		Moralis.User.logOut();
-		user = false;
-		initUser();
-	} else if (e.target.id === 'export') {
-		if (!user) {
-			const loginButton = document.createElement('button');
-			loginButton.innerText = 'Log-in';
-			loginButton.addEventListener('click', login);
-			displayModal(`To export as an NFT, you must first log in.`, loginButton);
-
-		} else {
-			Moralis.enableWeb3();
-			exportNFT();
-		}
-	}
-});
-
-closeButton.addEventListener('click', e => {
-	closeModal(e);
-});
-
-const closeModal = (e) => {
-		modal.style.display = 'none';
-		modalMessage.innerHTML = '';
-	},
-	displayModal = (message, button) => {
-		console.log(message);
-		modalMessage.innerHTML = message;
-		if (button) {
-			modalMessage.appendChild(button);
-		}
-		modal.style.display = 'block';
-	},
-	login = () => {
+const login = () => {
 		user = Moralis.authenticate({ signingMessage: "Log in using Moralis" }).then(_user => {
 			console.log("logged in user:", _user);
 			initUser();
-			closeModal();
+			Modal.close();
+			exportNFT();
 		}).catch(function (error) {
-			displayModal(error);
+			if (error.toString().indexOf('Non ethereum enabled browser') > -1) {
+				Modal.display(`You need to install <a href="https://metamask.io/download/" target="_metaMask">MetaMask</a> or another Web3 wallet to export as an NFT.`);
+			} else {
+				Modal.display(error);
+			}
+			user = false;
 		});
 	},
 	initUser = () => {
@@ -61,7 +28,7 @@ const closeModal = (e) => {
 			logoutButton.innerText = 'Log-out';
 			logoutButton.id = 'logout';
 			buttons.appendChild(logoutButton);
-			console.log(user.get("ethAddress"));
+			console.log('User: ', user);
 		} else {
 			const logoutButton = document.getElementById('logout');
 			if (logoutButton) {
@@ -70,45 +37,21 @@ const closeModal = (e) => {
 		}
 	};
 
-
-const serverUrl = "https://1g7kkxivghof.usemoralis.com:2053/server";
-const appId = "jU999BVgaiapYNxVNgi3yTzPmqaNS8oMpEOmBi4T";
-Moralis.start({ serverUrl, appId });
-let user = Moralis.User.current();
-initUser();
-
-const dataURLtoFile = (dataurl, filename) => {
-    const arr = dataurl.split(','),
-        mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]);
-
-	let n = bstr.length,
-		u8arr = new Uint8Array(n);
-
-    while(n--){
-        u8arr[n] = bstr.charCodeAt(n);
-    }
-
-    return new File([u8arr], filename, {type:mime});
-};
-
 const exportNFT = async () => {
 	console.log('Exporting NFT');
 
-	const filename = 'nftpaint-untitled.png';
-	const dataUrl = DrawingBoard.dataUrl();
-	const data = dataURLtoFile(dataUrl, filename);
+	const data = DrawingBoard.toFile();
 
 	const imageFile = new Moralis.File(data.name, data);
     await imageFile.saveIPFS();
     let imageHash = imageFile.hash();
 
 	const ipfsUrl = imageFile.ipfs();
-	displayModal(`Successfully uploaded image to <a href="${ipfsUrl}">${ipfsUrl}</a>`);
+	Modal.display(`Successfully uploaded image to <a href="${ipfsUrl}">${ipfsUrl}</a>`);
 
     let metadata = {
-        name: filename,
-        description: `${filename} was created by NFTPaint`,
+        name: data.name,
+        description: `${data.name} was created with https://NFTPaint.app`,
         image: "/ipfs/" + imageHash
     };
     console.log(metadata);
@@ -122,16 +65,84 @@ const exportNFT = async () => {
     let metadataHash = jsonFile.hash();
     console.log(jsonFile.ipfs(), 'ipfs://' + metadataHash);
 
+	user = Moralis.User.current();
+
 	const config = {
-        chain: 'rinkeby',
+        chain: 'eth',
         userAddress: user.get('ethAddress'),
         tokenType: 'ERC721',
         tokenUri: 'ipfs://' + metadataHash,
-        royaltiesAmount: 5, // 0.05% royalty. Optional
+        royaltiesAmount: 10,
+        list: true,
+        listTokenAmount: 1,
+        listTokenValue: 10 ** 18,
+        listAssetClass: 'ETH'
     };
 	console.log('config', config);
-    let res = await Moralis.Plugins.rarible.lazyMint(config);
-    console.log(res);
+	try {
+	    let res = await Moralis.Plugins.rarible.lazyMint(config),
+			nftUrl = `https://rarible.com/token/`;
 
-	displayModal(`NFT minted. <a href="https://rinkeby.rarible.com/token/${res.data.result.tokenAddress}:${res.data.result.tokenId}">View NFT`);
+	    console.log('res', res);
+
+		if (typeof res.data === 'undefined') {
+
+			Modal.display(`An error occured while minting NFT.`);
+
+		} else {
+			if (typeof res.data.result !== 'undefined' && typeof res.data.result.tokenAddress !== 'undefined') {
+				nftUrl = nftUrl + `${res.data.result.tokenAddress}:${res.data.result.tokenId}`;
+			} else if (typeof res.triggers !== 'undefined') {
+				res.triggers.forEach(trigger => {
+					if (trigger.endpoint == 'createSellOrder') {
+						nftUrl = nftUrl + `${trigger.params.makeTokenAddress}:${trigger.params.makeTokenId}`;
+					}
+				});
+			}
+
+			Modal.display(`NFT minted. <a href="${nftUrl}" target="_rarible">View on Rarible</a>`);
+		}
+
+	} catch (err) {
+		Modal.display(err);
+	}
 };
+
+const serverUrl = "https://1g7kkxivghof.usemoralis.com:2053/server";
+const appId = "jU999BVgaiapYNxVNgi3yTzPmqaNS8oMpEOmBi4T";
+
+Moralis.start({ serverUrl, appId });
+
+let user = Moralis.User.current();
+
+initUser();
+
+buttons.addEventListener('click', e => {
+	if (e.target.id === 'logout') {
+		Moralis.User.logOut();
+		user = false;
+		initUser();
+	} else if (e.target.id === 'export') {
+		if (!user) {
+			const loginButton = document.createElement('button');
+			loginButton.innerText = 'Log-in';
+			loginButton.addEventListener('click', login);
+			Modal.display(`To export as an NFT, you must first log in.`, loginButton);
+		} else {
+			const nextButton = document.createElement('button');
+			nextButton.innerText = 'Next';
+			nextButton.addEventListener('click', e => {
+				const filenameInput = document.getElementById('filename');
+				if (filenameInput.value.length > 0) {
+					DrawingBoard.setFilename(filenameInput.value);
+				} else {
+					DrawingBoard.clearFilename();
+				}
+				exportNFT();
+			});
+
+			Moralis.enableWeb3();
+			Modal.display(`NFT Name: <input type="text" name="filename" id="filename" value="${DrawingBoard.getFilename()}" />`, nextButton);
+		}
+	}
+});

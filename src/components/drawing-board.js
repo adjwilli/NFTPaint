@@ -1,26 +1,71 @@
 
-const titlebar = document.getElementById('titlebar');
 const paintOptions = document.getElementById('paint-options');
 const canvas = document.getElementById('drawing-board');
 const clearButton = document.getElementById('clear');
 const undoButton = document.getElementById('undo');
 const redoButton = document.getElementById('redo');
 const context = canvas.getContext('2d');
-let imageHistory = [];
-let imageHistoryIndex = -1;
 
 const canvasOffsetX = canvas.offsetLeft;
 const canvasOffsetY = canvas.offsetTop;
 
-canvas.width = window.innerWidth - canvasOffsetX;
-canvas.height = window.innerHeight - (canvasOffsetY + paintOptions.offsetHeight);
+const defaultFilename = 'nftpaint-untitled.png';
+let filename = defaultFilename;
 
+let imageHistory = [];
+let imageHistoryIndex = -1;
 let isPainting = false;
 let lineWidth = 5;
 let startX;
 let startY;
 
-export const dataUrl = () => canvas.toDataURL("image/png");
+export const toFile = () => {
+	    const dataurl = canvas.toDataURL("image/png"),
+			arr = dataurl.split(','),
+	        mime = arr[0].match(/:(.*?);/)[1],
+	        bstr = atob(arr[1]);
+
+		let n = bstr.length,
+			u8arr = new Uint8Array(n);
+
+	    while(n--){
+	        u8arr[n] = bstr.charCodeAt(n);
+	    }
+
+	    return new File([u8arr], getFilename(), {type:mime});
+	},
+	getFilename = () => {
+		try {
+	        filename = localStorage.nftPaintFilename || filename || defaultFilename;
+		} catch (err) {
+			displayModal(err);
+		}
+
+		return filename;
+	},
+	setFilename = (_filename) => {
+		if (typeof _filename !== 'string' || _filename.length < 1) {
+			displayModal('Filename is not valid.');
+			return;
+		}
+
+		filename = _filename;
+
+		try {
+	        localStorage.nftPaintFilename = _filename;
+		} catch (err) {
+			displayModal(err);
+		}
+	},
+	clearFilename = () => {
+		try {
+	        filename = localStorage.nftPaintFilename = defaultFilename;
+		} catch (err) {
+			displayModal(err);
+		}
+
+		return filename;
+	};
 
 const drawStart = (e) => {
 		const touch = (e.touches || [])[0] || e;
@@ -81,6 +126,7 @@ const drawStart = (e) => {
 		saveToStorage();
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		localStorage.removeItem('nftPaint');
+		clearFilename();
 		saveToHistory();
 		undoRedoState();
 	},
@@ -143,6 +189,12 @@ const drawStart = (e) => {
 		} else {
 			clearButton.disabled = 'disabled';
 		}
+	},
+	resizeCanvas = () => {
+		const canvasOffsetX = canvas.offsetLeft;
+		const canvasOffsetY = canvas.offsetTop;
+		canvas.width = window.innerWidth - canvasOffsetX;
+		canvas.height = window.innerHeight - (canvasOffsetY + paintOptions.offsetHeight);
 	};
 
 undoButton.addEventListener('click', undo);
@@ -169,3 +221,4 @@ canvas.addEventListener('touchend', drawEnd);
 canvas.addEventListener('touchmove', draw);
 
 loadSavedImage();
+resizeCanvas();

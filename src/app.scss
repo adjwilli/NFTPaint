@@ -1,3 +1,4 @@
+
 body {
     margin: 0;
     padding: 0;
@@ -82,14 +83,14 @@ button {
 	}
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 550px) {
 	body {
-		font-size: 12px;
+		font-size: 14px;
 	}
 
 
 	h1 {
-		margin: 0 0.5em;
+		margin: 0 0.5em 0 0.25em;
 		align-content: center;
 		display: flex;
 		height: 1em;
@@ -102,9 +103,12 @@ button {
 	}
 
 	#canvas-options {
+		flex-shrink: 0;
+		width: 100%;
+		padding: 0.5em 0 0;
+		border-top: 1px solid rgba(0,0,0,0.1);
 		border-left: 0;
-		padding: 0;
-		margin: 0.5em 0.5em 0;
+		margin-top: 0.5em;
 	}
 }
 
@@ -126,17 +130,23 @@ button {
 
 #modal {
 	position: absolute;
-}
+	box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 
-#close {
-	background-color: transparent;
-	border: 0;
-	color: white;
-	float: right;
-	margin: 0.5em;
-	font-weight: bold;
-	font-size: 24px;
-	cursor: pointer;
+	button {
+		margin-top: 0.5em;
+	}
+
+	#close {
+		background-color: transparent;
+		border: 0;
+		color: white;
+		float: right;
+		margin: 0.25em 0.5em;
+		font-weight: bold;
+		font-size: 150%;
+		cursor: pointer;
+		box-shadow: none;
+	}
 }
 
 #saved-images {

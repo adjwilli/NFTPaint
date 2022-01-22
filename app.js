@@ -6,6 +6,7 @@ const express = require('express'),
 	bodyParser = require('body-parser');
 
 app.use('/public', express.static('dist'));
+app.use('/static', express.static('static'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/submit', (req, res) => {
