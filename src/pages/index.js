@@ -97,8 +97,9 @@ const exportNFT = async () => {
         listTokenValue: 10 ** 18,
         listAssetClass: 'ETH'
     };
-	console.log('config', config);
+
 	try {
+		console.log('config', config);
 	    let res = await Moralis.Plugins.rarible.lazyMint(config),
 			nftUrl = `https://rarible.com/token/`;
 

@@ -5,6 +5,8 @@ const clearButton = document.getElementById('clear');
 const undoButton = document.getElementById('undo');
 const redoButton = document.getElementById('redo');
 const context = canvas.getContext('2d');
+const colorSelector = document.getElementById('stroke');
+const lineWidths = document.getElementById('line-widths');
 
 const canvasOffsetX = canvas.offsetLeft;
 const canvasOffsetY = canvas.offsetTop;
@@ -16,6 +18,16 @@ let imageHistory = [];
 let imageHistoryIndex = -1;
 let isPainting = false;
 let lineWidth = 5;
+let colors = [
+	'#ff0000',
+	'#ffff00',
+	'#00ff00',
+	'#00ffff',
+	'#0000ff',
+	'#ff00ff',
+	'#ffffff',
+	'#000000'
+];
 let startX;
 let startY;
 
@@ -49,10 +61,10 @@ export const toFile = () => {
 			return;
 		}
 
-		filename = _filename;
+		filename = _filename.trim();
 
 		try {
-	        localStorage.nftPaintFilename = _filename;
+	        localStorage.nftPaintFilename = filename;
 		} catch (err) {
 			displayModal(err);
 		}
@@ -195,22 +207,73 @@ const drawStart = (e) => {
 		const canvasOffsetY = canvas.offsetTop;
 		canvas.width = window.innerWidth - canvasOffsetX;
 		canvas.height = window.innerHeight - (canvasOffsetY + paintOptions.offsetHeight);
+	},
+	selectLineWidth = (width) => {
+		if (width > 0) {
+			const lineWidthButton = document.getElementById(`line-width-${width}`),
+				selectedLineWidthButton = document.querySelector('.line-width.selected');
+
+			lineWidth = width;
+
+			if (selectedLineWidthButton) {
+				selectedLineWidthButton.classList.remove('selected');
+			}
+
+			lineWidthButton.classList.add('selected');
+		}
+	},
+	processColor = (str) => {
+		if (str.indexOf('#') === 0) {
+			return str;
+		} else {
+			const comps = str.replace(/[^\d,]+/g, '').split(',');
+			return '#' + comps.map(x => {
+				const hex = parseInt(x).toString(16);
+				return hex.length === 1 ? '0' + hex : hex;
+			}).join('');
+		}
+	},
+	selectColor = (color) => {
+		console.log('Select color:', color);
+
+		color = processColor(color);
+
+		const colorBlocks = document.querySelectorAll('.color-block');
+
+		let _colors = [color];
+
+		colors.forEach(_color => {
+			if (_color !== color) {
+				_colors.push(_color);
+			}
+		});
+
+		colors = _colors.slice(0,8);
+		console.log('colors', colors);
+
+		colorBlocks.forEach((colorBlock, i) => {
+			colorBlock.style.backgroundColor = colors[i];
+		});
+
+	    context.strokeStyle = color;
+		colorSelector.value = color;
+	},
+	initColors = () => {
+		const colorBlocks = document.querySelectorAll('.color-block'),
+			colorSelector = document.getElementById('stroke');
+
+		colorBlocks.forEach((colorBlock, i) => {
+			colorBlock.style.backgroundColor = colors[i];
+			colorBlock.addEventListener('click', e => {
+				const color = e.target.style.backgroundColor;
+				selectColor(color);
+			});
+		});
 	};
 
 undoButton.addEventListener('click', undo);
 redoButton.addEventListener('click', redo);
 clearButton.addEventListener('click', clear);
-
-paintOptions.addEventListener('change', e => {
-    if (e.target.id === 'stroke') {
-        context.strokeStyle = e.target.value;
-    }
-
-    if (e.target.id === 'lineWidth') {
-        lineWidth = e.target.value;
-    }
-
-});
 
 canvas.addEventListener('mousedown', drawStart);
 canvas.addEventListener('mouseup', drawEnd);
@@ -220,5 +283,18 @@ canvas.addEventListener('touchstart', drawStart);
 canvas.addEventListener('touchend', drawEnd);
 canvas.addEventListener('touchmove', draw);
 
+colorSelector.addEventListener('change', e => {
+	const color = e.target.value;
+	selectColor(color);
+});
+
+lineWidths.addEventListener('click', e => {
+	const targetId = e.target.closest('.line-width').id || '5',
+		_lineWidth = targetId.replace('line-width-', '');
+	selectLineWidth(_lineWidth);
+});
+
 loadSavedImage();
 resizeCanvas();
+selectLineWidth(lineWidth);
+initColors();

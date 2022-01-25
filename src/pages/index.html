@@ -15,9 +15,21 @@
 			<div id="buttons">
 	            <button id="export">Export NFT</button>
 			</div>
-			<div id="canvas-options">
-	            <button id="undo" disabled="disabled">Undo</button>
-	            <button id="redo" disabled="disabled">Redo</button>
+			<div id="canvas-options" class="mfw">
+	            <button id="undo" disabled="disabled">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+						<!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) -->
+						<path d="M212.333 224.333H12c-6.627 0-12-5.373-12-12V12C0 5.373 5.373 0 12 0h48c6.627 0 12 5.373 12 12v78.112C117.773 39.279 184.26 7.47 258.175 8.007c136.906.994 246.448 111.623 246.157 248.532C504.041 393.258 393.12 504 256.333 504c-64.089 0-122.496-24.313-166.51-64.215-5.099-4.622-5.334-12.554-.467-17.42l33.967-33.967c4.474-4.474 11.662-4.717 16.401-.525C170.76 415.336 211.58 432 256.333 432c97.268 0 176-78.716 176-176 0-97.267-78.716-176-176-176-58.496 0-110.28 28.476-142.274 72.333h98.274c6.627 0 12 5.373 12 12v48c0 6.627-5.373 12-12 12z"/>
+					</svg>
+					Undo
+				</button>
+	            <button id="redo" disabled="disabled">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+						<!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) -->
+						<path d="M500.33 0h-47.41a12 12 0 0 0-12 12.57l4 82.76A247.42 247.42 0 0 0 256 8C119.34 8 7.9 119.53 8 256.19 8.1 393.07 119.1 504 256 504a247.1 247.1 0 0 0 166.18-63.91 12 12 0 0 0 .48-17.43l-34-34a12 12 0 0 0-16.38-.55A176 176 0 1 1 402.1 157.8l-101.53-4.87a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12h200.33a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12z"/>
+					</svg>
+					Redo
+				</button>
 	            <button id="clear" disabled="disabled">Clear</button>
 			</div>
         </div>
@@ -29,13 +41,51 @@
             <canvas id="drawing-board"></canvas>
         </div>
 		<div id="paint-options" class="toolbar">
-			<div>
+			<div class="mfw">
 				<label for="stroke">Color</label>
 				<input id="stroke" name='stroke' type="color">
+
+				<div id="color-blocks">
+					<span class="color-block"></span>
+					<span class="color-block"></span>
+					<span class="color-block"></span>
+					<span class="color-block"></span>
+					<span class="color-block"></span>
+					<span class="color-block"></span>
+					<span class="color-block"></span>
+					<span class="color-block"></span>
+				</div>
+
 			</div>
-			<div>
+			<div class="mfw">
 				<label for="lineWidth">Line Width</label>
-				<input id="lineWidth" name='lineWidth' type="number" value="5">
+
+				<span id="line-widths">
+					<span id="line-width-1" class="line-width">
+						<span></span>
+					</span>
+					<span id="line-width-2" class="line-width">
+						<span></span>
+					</span>
+					<span id="line-width-3" class="line-width">
+						<span></span>
+					</span>
+					<span id="line-width-5" class="line-width">
+						<span></span>
+					</span>
+					<span id="line-width-8" class="line-width">
+						<span></span>
+					</span>
+					<span id="line-width-13" class="line-width">
+						<span></span>
+					</span>
+					<span id="line-width-17" class="line-width">
+						<span></span>
+					</span>
+					<span id="line-width-21" class="line-width">
+						<span></span>
+					</span>
+				</span>
 			</div>
 		</div>
     </section>

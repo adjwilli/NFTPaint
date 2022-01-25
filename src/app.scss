@@ -36,6 +36,13 @@ button {
 	&:disabled {
 		opacity: 0.3;
 	}
+
+	svg {
+		fill: white;
+		height: 1em;
+		width: 1em;
+		margin: -0.1em 0;
+	}
 }
 
 .container {
@@ -85,7 +92,7 @@ button {
 
 @media only screen and (max-width: 550px) {
 	body {
-		font-size: 14px;
+		font-size: 16px;
 	}
 
 
@@ -100,16 +107,21 @@ button {
 		div {
 
 		}
+
+		&>.mfw {
+			flex-shrink: 0;
+			width: 100%;
+			padding: 0.5em 0 0;
+			border-top: 1px solid rgba(0,0,0,0.1);
+			border-left: 0;
+			margin-top: 0.5em;
+
+			&:first-child {
+				margin-top: 0;
+			}
+		}
 	}
 
-	#canvas-options {
-		flex-shrink: 0;
-		width: 100%;
-		padding: 0.5em 0 0;
-		border-top: 1px solid rgba(0,0,0,0.1);
-		border-left: 0;
-		margin-top: 0.5em;
-	}
 }
 
 #stroke {
@@ -117,9 +129,111 @@ button {
 	margin: -2px 0;
 }
 
+#color-blocks {
+	display: flex;
+
+	.color-block {
+		width: 1.5em;
+		height: 1.5em;
+		background-color: white;
+		margin-left: 1px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+		border: 1px solid rgba(0,0,0,0.1);
+	}
+}
+
 #lineWidth {
 	width: 4em;
 	height: 24px;
+}
+
+#line-widths {
+	display: flex;
+
+	&>span {
+		width: 1.5em;
+		height: 1.5em;
+		background-color: white;
+		margin-left: 1px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+		border: 1px solid rgba(0,0,0,0.1);
+
+		&.selected {
+			border: 1px solid rgba(0,0,255,0.2);
+			background-color: rgba(200,200,255,0.8);
+		}
+
+		&>span {
+			border-radius: 50%;
+			background-color: black;
+			display: inline-block;
+		}
+	}
+
+
+	#line-width-1 {
+		span {
+			height: 1px;
+			width: 1px;
+		}
+	}
+
+	#line-width-2 {
+		span {
+			height: 2px;
+			width: 2px;
+		}
+	}
+
+	#line-width-3 {
+		span {
+			height: 3px;
+			width: 3px;
+		}
+	}
+
+	#line-width-5 {
+		span {
+			height: 5px;
+			width: 5px;
+		}
+	}
+
+	#line-width-8 {
+		span {
+			height: 8px;
+			width: 8px;
+		}
+	}
+
+	#line-width-13 {
+		span {
+			height: 13px;
+			width: 13px;
+		}
+	}
+
+	#line-width-17 {
+		span {
+			height: 17px;
+			width: 17px;
+		}
+	}
+
+	#line-width-21 {
+		span {
+			height: 21px;
+			width: 21px;
+		}
+	}
 }
 
 .drawing-board {
@@ -147,23 +261,6 @@ button {
 		cursor: pointer;
 		box-shadow: none;
 	}
-}
-
-#saved-images {
-	border-top: 1px solid rgba(0,0,0,0.1);
-    background-color: #00A4EF;
-}
-
-#saved-images img {
-    height: 13em;
-	background-color: white;
-	margin: 1em;
-	cursor: pointer;
-	border: 1px solid transparent;
-}
-
-#saved-images img:hover {
-	border: 1px solid blue;
 }
 
 #modal-message {
