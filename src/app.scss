@@ -296,14 +296,3 @@ form {
 video, canvas {
 	z-index: 5;
 }
-
-#links {
-	display: flex;
-	align-items: center;
-	justify-content: right;
-
-	a {
-		color: white;
-	    font-size: 12px;
-	}
-}
