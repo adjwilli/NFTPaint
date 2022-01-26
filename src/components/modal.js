@@ -12,6 +12,7 @@ export const close = (e) => {
 			modalMessage.appendChild(button);
 		}
 		modal.style.display = 'block';
+		modal.style.zIndex = 10;
 	};
 
 closeButton.addEventListener('click', e => {

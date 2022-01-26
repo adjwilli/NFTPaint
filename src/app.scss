@@ -244,6 +244,7 @@ button {
 
 #modal {
 	position: absolute;
+	z-index: 10;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 
 	button {
@@ -289,5 +290,20 @@ form {
 
 	button {
 		margin-top: 0.5em;
+	}
+}
+
+video, canvas {
+	z-index: 5;
+}
+
+#links {
+	display: flex;
+	align-items: center;
+	justify-content: right;
+
+	a {
+		color: white;
+	    font-size: 12px;
 	}
 }

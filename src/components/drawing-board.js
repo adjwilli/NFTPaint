@@ -1,3 +1,5 @@
+import * as Modal from '../components/modal.js';
+import * as FileUtils from '../components/file-utils.js';
 
 const paintOptions = document.getElementById('paint-options');
 const canvas = document.getElementById('drawing-board');
@@ -10,9 +12,6 @@ const lineWidths = document.getElementById('line-widths');
 
 const canvasOffsetX = canvas.offsetLeft;
 const canvasOffsetY = canvas.offsetTop;
-
-const defaultFilename = 'nftpaint-untitled.png';
-let filename = defaultFilename;
 
 let imageHistory = [];
 let imageHistoryIndex = -1;
@@ -31,53 +30,10 @@ let colors = [
 let startX;
 let startY;
 
-export const toFile = () => {
-	    const dataurl = canvas.toDataURL("image/png"),
-			arr = dataurl.split(','),
-	        mime = arr[0].match(/:(.*?);/)[1],
-	        bstr = atob(arr[1]);
-
-		let n = bstr.length,
-			u8arr = new Uint8Array(n);
-
-	    while(n--){
-	        u8arr[n] = bstr.charCodeAt(n);
-	    }
-
-	    return new File([u8arr], getFilename(), {type:mime});
-	},
-	getFilename = () => {
-		try {
-	        filename = localStorage.nftPaintFilename || filename || defaultFilename;
-		} catch (err) {
-			displayModal(err);
-		}
-
-		return filename;
-	},
-	setFilename = (_filename) => {
-		if (typeof _filename !== 'string' || _filename.length < 1) {
-			displayModal('Filename is not valid.');
-			return;
-		}
-
-		filename = _filename.trim();
-
-		try {
-	        localStorage.nftPaintFilename = filename;
-		} catch (err) {
-			displayModal(err);
-		}
-	},
-	clearFilename = () => {
-		try {
-	        filename = localStorage.nftPaintFilename = defaultFilename;
-		} catch (err) {
-			displayModal(err);
-		}
-
-		return filename;
-	};
+export const getFilename = FileUtils.getFilename,
+	clearFilename = FileUtils.clearFilename,
+	setFilename = FileUtils.setFilename,
+	toFile = FileUtils.toFile;
 
 const drawStart = (e) => {
 		const touch = (e.touches || [])[0] || e;
@@ -124,7 +80,7 @@ const drawStart = (e) => {
 		try {
 	        localStorage.nftPaint = canvas.toDataURL(dataUrl);
 		} catch (err) {
-			displayModal(err);
+			Modal.display(err);
 		}
 	},
 	saveToHistory = () => {
@@ -138,7 +94,7 @@ const drawStart = (e) => {
 		saveToStorage();
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		localStorage.removeItem('nftPaint');
-		clearFilename();
+		FileUtils.clearFilename();
 		saveToHistory();
 		undoRedoState();
 	},
@@ -203,8 +159,6 @@ const drawStart = (e) => {
 		}
 	},
 	resizeCanvas = () => {
-		const canvasOffsetX = canvas.offsetLeft;
-		const canvasOffsetY = canvas.offsetTop;
 		canvas.width = window.innerWidth - canvasOffsetX;
 		canvas.height = window.innerHeight - (canvasOffsetY + paintOptions.offsetHeight);
 	},

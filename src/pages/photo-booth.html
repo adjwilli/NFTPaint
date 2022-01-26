@@ -1,0 +1,57 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,  user-scalable=no, maximum-scale=1">
+    <link rel="stylesheet" href="public/photo-booth.css">
+	<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <meta name="description" content="Draw pictures, save them as NFTs on Rarible.">
+    <meta itemprop="description" content="Draw pictures, save them as NFTs on Rarible.">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>NFTPaint</title>
+
+</head>
+<body>
+    <section class="container">
+        <div id="titlebar" class="toolbar">
+            <h1>NFTPhoto</h1>
+			<div id="buttons">
+	            <button id="export">Export NFT</button>
+			</div>
+        </div>
+		<div id="modal" style="display:none;">
+			<button id="close">X</button>
+			<div id="modal-message"></div>
+		</div>
+        <div class="drawing-board">
+			<video autoplay class="none"></video>
+            <canvas id="drawing-board"></canvas>
+        </div>
+		<div id="camera-options" class="toolbar">
+			<div id="filters" class="mfw">
+				<button id="none">None</button>
+				<button id="grayscale">Grayscale</button>
+				<button id="invert">Invert</button>
+				<button id="sepia">Sepia</button>
+				<button id="blur">Blur</button>
+			</div>
+			<div class="mfw">
+				<button id="take-photo">Take Photo</button>
+				<button id="retake-photo">Re-take Photo</button>
+			</div>
+
+			<div id="links" class="mfw">
+				<a href="/">Paint ></a>
+			</div>
+		</div>
+    </section>
+    <script src="./public/photo-booth.js"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-KVH4W3WMG1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	  gtag('config', 'G-KVH4W3WMG1');
+	</script>
+</body>
+</html>

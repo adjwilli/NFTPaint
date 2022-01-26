@@ -9,8 +9,8 @@ app.use('/public', express.static('dist'));
 app.use('/static', express.static('static'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/submit', (req, res) => {
-	res.sendFile(path.join(__dirname + '/src/pages/submit.html'));
+app.get('/photo-booth', (req, res) => {
+	res.sendFile(path.join(__dirname + '/src/pages/photo-booth.html'));
 });
 
 app.get('/', (req, res) => {

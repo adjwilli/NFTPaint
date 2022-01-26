@@ -4,7 +4,7 @@ const path = require('path'),
 module.exports = {
 	entry: {
 		'index': './src/pages/index.js',
-		'submit': './src/pages/submit.js'
+		'photo-booth': './src/pages/photo-booth.js'
 	},
     output: {
         path: path.resolve(__dirname, 'dist'),
