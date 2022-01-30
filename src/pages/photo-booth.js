@@ -5,7 +5,7 @@ import * as Modal from '../components/modal.js';
 
 const Moralis = require('moralis');
 
-const buttons = document.getElementById('buttons');
+const exportButton = document.getElementById('export');
 
 const login = () => {
 		user = Moralis.authenticate({ signingMessage: "Log in using Moralis" }).then(_user => {
@@ -29,6 +29,14 @@ const login = () => {
 			const logoutButton = document.createElement("button");
 			logoutButton.innerText = 'Log-out';
 			logoutButton.id = 'logout';
+
+			logoutButton.addEventListener('click', e => {
+				Moralis.User.logOut();
+				user = false;
+				initUser();
+				gtag('event', 'logout');
+			});
+
 			buttons.appendChild(logoutButton);
 			console.log('User: ', user);
 		} else {
@@ -140,22 +148,15 @@ let user = Moralis.User.current();
 
 initUser();
 
-buttons.addEventListener('click', e => {
-	if (e.target.id === 'logout') {
-		Moralis.User.logOut();
-		user = false;
-		initUser();
-		gtag('event', 'logout');
-	} else if (e.target.id === 'export') {
-		if (!user) {
-			const loginButton = document.createElement('button');
-			loginButton.innerText = 'Log-in';
-			loginButton.addEventListener('click', login);
-			Modal.display(`To export as an NFT, you must first log in.`, loginButton);
-			gtag('event', 'login-display');
-		} else {
-			chooseFilename();
-		}
+exportButton.addEventListener('click', e => {
+	if (!user) {
+		const loginButton = document.createElement('button');
+		loginButton.innerText = 'Log-in';
+		loginButton.addEventListener('click', login);
+		Modal.display(`To export as an NFT, you must first log in.`, loginButton);
+		gtag('event', 'login-display');
+	} else {
+		chooseFilename();
 	}
 });
 

@@ -16,7 +16,6 @@
         <div id="titlebar" class="toolbar">
             <h1>NFTPhoto</h1>
 			<div id="buttons">
-	            <button id="export">Export NFT</button>
 			</div>
         </div>
 		<div id="modal" style="display:none;">
@@ -24,12 +23,12 @@
 			<div id="modal-message"></div>
 		</div>
         <div class="drawing-board">
-			<video autoplay class="none"></video>
+			<video autoplay playsinline class="none"></video>
             <canvas id="drawing-board"></canvas>
         </div>
 		<div id="camera-options" class="toolbar">
 			<div id="filters" class="mfw">
-				<button id="none">None</button>
+				<button id="none" class="selected">None</button>
 				<button id="grayscale">Grayscale</button>
 				<button id="invert">Invert</button>
 				<button id="sepia">Sepia</button>
@@ -38,6 +37,7 @@
 			<div class="mfw">
 				<button id="take-photo">Take Photo</button>
 				<button id="retake-photo">Re-take Photo</button>
+	            <button id="export">Export NFT</button>
 			</div>
 		</div>
     </section>

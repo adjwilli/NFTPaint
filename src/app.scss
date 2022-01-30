@@ -43,6 +43,14 @@ button {
 		width: 1em;
 		margin: -0.1em 0;
 	}
+
+
+	&.selected {
+		border: 1px solid rgba(0,0,255,0.2);
+		background-color: #CCECFB;
+		color: #005277;
+		border: 1px solid #0072A7;
+	}
 }
 
 .container {
