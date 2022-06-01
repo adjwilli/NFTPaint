@@ -4,6 +4,8 @@ Draw a picture or snap a photobooth filter image and export it as an NFT using M
 
 See this project in action at https://nftpaint.app.
 
+Photo Booth at https://nftpaint.app/photo-booth with known issues on larger screens.
+
 ---
 
 I started this project as an experiment to learn more about Web3 and NFTs. Since I don't have plans to work on it much more, I open-sourced it hoping it can provide good examples of some less common JavaScript features. Below are a list of where these can be found in the code:
